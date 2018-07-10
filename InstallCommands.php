@@ -6,6 +6,7 @@ use Drupal\Component\FileCache\FileCacheFactory;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Extension\InfoParserDynamic;
 use Drupal\Core\Site\Settings;
+use Drush\Commands\DrushCommands;
 use Drush\Drupal\ExtensionDiscovery;
 
 /**
