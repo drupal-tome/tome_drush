@@ -1,4 +1,4 @@
-# Tome global Drush commands
+# tome_drush
 
 This repository contains global Drush commands which make installing and
 initializing Tome easier. These commands are not required to use Tome, which is
