@@ -38,7 +38,7 @@ class InstallCommands extends DrushCommands {
 
     $config = $source_storage->read('core.extension');
 
-    drush_invoke_process('@self', 'site-install', [$config['profile']], ['yes' => TRUE]);
+    drush_invoke_process('@self', 'site-install', [$config['profile']], ['yes' => TRUE, 'sites-subdir' => 'default']);
     if (drush_get_error()) return 1;
     drush_invoke_process('@self', 'pm:enable', ['tome'], ['yes' => TRUE]);
     if (drush_get_error()) return 1;
@@ -66,7 +66,7 @@ class InstallCommands extends DrushCommands {
 
     $profiles = $this->getProfiles();
     $profile = $this->io()->choice('Select an installation profile', $profiles);
-    drush_invoke_process('@self', 'site-install', [$profile], ['yes' => TRUE]);
+    drush_invoke_process('@self', 'site-install', [$profile], ['yes' => TRUE, 'sites-subdir' => 'default']);
     if (drush_get_error()) return 1;
     drush_invoke_process('@self', 'pm:enable', ['tome'], ['yes' => TRUE]);
     if (drush_get_error()) return 1;
