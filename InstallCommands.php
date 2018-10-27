@@ -40,7 +40,12 @@ class InstallCommands extends DrushCommands {
 
     drush_invoke_process('@self', 'site-install', [$config['profile']], ['yes' => TRUE, 'sites-subdir' => 'default']);
     if (drush_get_error()) return 1;
-    drush_invoke_process('@self', 'pm:enable', ['tome'], ['yes' => TRUE]);
+    if (isset($config['module']['tome_sync'])) {
+      drush_invoke_process('@self', 'pm:enable', ['tome_sync'], ['yes' => TRUE]);
+    }
+    else {
+      drush_invoke_process('@self', 'pm:enable', ['tome'], ['yes' => TRUE]);
+    }
     if (drush_get_error()) return 1;
     drush_invoke_process('@self', 'tome:import', [], ['yes' => TRUE]);
     if (drush_get_error()) return 1;
