@@ -8,11 +8,16 @@ use Drupal\Core\Extension\InfoParserDynamic;
 use Drupal\Core\Site\Settings;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\ExtensionDiscovery;
+use Drush\Drush;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 
 /**
  * Contains install and init commands for tome.
  */
-class InstallCommands extends DrushCommands {
+class InstallCommands extends DrushCommands implements SiteAliasManagerAwareInterface {
+
+  use SiteAliasManagerAwareTrait;
 
   /**
    * Installs tome.
@@ -38,19 +43,16 @@ class InstallCommands extends DrushCommands {
 
     $config = $source_storage->read('core.extension');
 
-    drush_invoke_process('@self', 'site-install', [$config['profile']], ['yes' => TRUE, 'sites-subdir' => 'default']);
-    if (drush_get_error()) return 1;
+    $self = $this->siteAliasManager()->getSelf();
+    Drush::drush($self, 'site-install', [$config['profile']], ['yes' => TRUE, 'sites-subdir' => 'default'])->mustRun();
     if (isset($config['module']['tome_sync'])) {
-      drush_invoke_process('@self', 'pm:enable', ['tome_sync'], ['yes' => TRUE]);
+      Drush::drush($self, 'pm:enable', ['tome_sync'], ['yes' => TRUE])->mustRun();
     }
     else {
-      drush_invoke_process('@self', 'pm:enable', ['tome'], ['yes' => TRUE]);
+      Drush::drush($self, 'pm:enable', ['tome'], ['yes' => TRUE])->mustRun();
     }
-    if (drush_get_error()) return 1;
-    drush_invoke_process('@self', 'tome:import', [], ['yes' => TRUE]);
-    if (drush_get_error()) return 1;
-    drush_invoke_process('@self', 'cache:rebuild', [], ['yes' => TRUE]);
-    if (drush_get_error()) return 1;
+    Drush::drush($self, 'tome:import', [], ['yes' => TRUE])->mustRun();
+    Drush::drush($self, 'cache:rebuild', [], ['yes' => TRUE])->mustRun();
   }
 
   /**
@@ -71,12 +73,11 @@ class InstallCommands extends DrushCommands {
 
     $profiles = $this->getProfiles();
     $profile = $this->io()->choice('Select an installation profile', $profiles);
-    drush_invoke_process('@self', 'site-install', [$profile], ['yes' => TRUE, 'sites-subdir' => 'default']);
-    if (drush_get_error()) return 1;
-    drush_invoke_process('@self', 'pm:enable', ['tome'], ['yes' => TRUE]);
-    if (drush_get_error()) return 1;
-    drush_invoke_process('@self', 'tome:export', [], ['yes' => TRUE]);
-    if (drush_get_error()) return 1;
+
+    $self = $this->siteAliasManager()->getSelf();
+    Drush::drush($self, 'site-install', [$profile], ['yes' => TRUE, 'sites-subdir' => 'default'])->mustRun();
+    Drush::drush($self, 'pm:enable', ['tome'], ['yes' => TRUE])->mustRun();
+    Drush::drush($self, 'tome:export', [], ['yes' => TRUE])->mustRun();
   }
 
   /**
