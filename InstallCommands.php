@@ -53,6 +53,8 @@ class InstallCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
     Drush::drush($self, 'tome:import', [], ['yes' => TRUE])->mustRun();
     Drush::drush($self, 'cache:rebuild', [], ['yes' => TRUE])->mustRun();
+
+    $this->io()->success('Install complete!');
   }
 
   /**
@@ -78,6 +80,8 @@ class InstallCommands extends DrushCommands implements SiteAliasManagerAwareInte
     Drush::drush($self, 'site-install', [$profile], ['yes' => TRUE, 'sites-subdir' => 'default'])->mustRun();
     Drush::drush($self, 'pm:enable', ['tome'], ['yes' => TRUE])->mustRun();
     Drush::drush($self, 'tome:export', [], ['yes' => TRUE])->mustRun();
+
+    $this->io()->success('Initialization complete!');
   }
 
   /**
