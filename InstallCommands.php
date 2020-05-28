@@ -34,7 +34,7 @@ class InstallCommands extends DrushCommands implements SiteAliasManagerAwareInte
     }
 
     FileCacheFactory::setConfiguration(['default' => ['class' => '\Drupal\Component\FileCache\NullFileCache']]);
-    $source_storage = new FileStorage(config_get_config_directory(CONFIG_SYNC_DIRECTORY));
+    $source_storage = new FileStorage(Settings::get('config_sync_directory'));
 
     if (!$source_storage->exists('core.extension')) {
       $this->io()->warning('Existing configuration to install from not found. If this is your first time using Tome try running "drush tome:init".');
@@ -67,7 +67,7 @@ class InstallCommands extends DrushCommands implements SiteAliasManagerAwareInte
    *   The status code, if the command did not complete successfully.
    */
   public function init() {
-    if (is_dir(config_get_config_directory(CONFIG_SYNC_DIRECTORY)) || is_dir(Settings::get('tome_content_directory', '../content'))) {
+    if (is_dir(Settings::get('config_sync_directory')) || is_dir(Settings::get('tome_content_directory', '../content'))) {
       if (!$this->io()->confirm('Running this command will remove all exported content and configuration. Do you want to continue?', FALSE)) {
         return 0;
       }
